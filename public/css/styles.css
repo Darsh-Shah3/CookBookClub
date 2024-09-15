@@ -1,0 +1,91 @@
+/* General styles */
+:root {
+    --bs-font-sans-serif: 'Rubik', sans-serif;
+}
+
+.container-xxl {
+    max-width: 1530px;
+}
+
+body {
+    background-image: url('/img/i-like-food.svg');
+    background-color: rgb(243,243,243);
+    font-size: 18px;
+    font-weight: 600;
+}
+
+a {
+    color: var(--bs-dark);
+}
+
+.category__link {
+    text-align: center;
+    display: block;
+    text-decoration: none;
+    transition: 250ms all;
+}
+
+.category__link:hover {
+    transform: scale(1.1);
+}
+
+.category__image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+    margin-bottom: 10px;
+    box-shadow: 0px 3px 6px rgba(0,0,0,.16);
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.category__image img {
+    width: 100%;
+    object-fit: cover;
+}
+
+.category__image--large {
+    height: 330px;
+}
+
+.social-icons {
+    display: flex;
+    justify-content: space-between; /* Distributes space between icons */
+    gap: 10px; /* Adjust gap as needed */
+    margin-top: 10px;
+    text-decoration: none;
+}
+
+.social-icons a {
+    display: inline-block;
+    transition: transform 0.2s ease;
+}
+
+.social-icons a:hover {
+    transform: scale(1.1);
+}
+
+/* Footer specific styles */
+footer {
+    /* Ensure this targets your specific footer element */
+    font-family: var(--bs-font-sans-serif);
+}
+
+footer h1, footer h2, footer h3, footer h4, footer h5, footer h6 {
+    font-weight: 700; /* Heavier weight for all headings in footer */
+}
+
+footer p, footer span, footer a {
+    font-weight: 400; /* Lighter weight for content */
+}
+
+/* Optional: additional styling for footer content */
+footer p {
+    margin-bottom: 10px;
+}
+
+footer a {
+    text-decoration: none;
+    color: var(--bs-dark);
+}

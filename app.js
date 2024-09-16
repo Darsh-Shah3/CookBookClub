@@ -4,7 +4,7 @@ const fileUpload = require('express-fileupload');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const flash = require('connect-flash');
-
+const path = require('path');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
@@ -19,8 +19,8 @@ require('dotenv').config();
 // Body parser middleware to parse incoming form data
 app.use(express.urlencoded({ extended: true }));
 
-// Static files middleware for serving files from "public" directory
-app.use(express.static('public'));
+// Static files middleware for serving files from "public" director
+app.use(express.static('C://Users//LENOVO//OneDrive//Desktop//CookBookClub//public'));
 
 // EJS layouts middleware
 app.use(expressLayout);

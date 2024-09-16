@@ -6,14 +6,15 @@ const User = require('../models/User'); // Ensure User model is imported
 const bcrypt = require('bcrypt');
 const passport = require('passport');
 const { sendWelcomeEmail } = require('../utils/mailer');
-
+const fs = require('fs');
+const path=require('path');
 
 /**  
  * GET /
  * Homepage
 */
 exports.homepage = async (request, response) => {
-    
+
     try {
         const limitNumber = 5
         const categories = await Category.find({}).limit(limitNumber)
@@ -35,7 +36,6 @@ exports.homepage = async (request, response) => {
     }
 }
 
-
 /**  
  * GET /categories
  * Categories
@@ -50,7 +50,6 @@ exports.exploreCategories = async (request, response) => {
         response.status(500).send({ message: error.message || "Error Occured" })
     }
 }
-
 
 /**  
  * GET /categories/:id
@@ -69,7 +68,6 @@ exports.exploreCategoriesById = async (request, response) => {
 }
 
 
-
 /**  
  * GET /recipe/:id
  * Recipe
@@ -83,75 +81,58 @@ exports.exploreRecipe = async (request, response) => {
             return res.status(404).send('Recipe not found');
         }
 
-        response.render('recipe', { title: 'CookBookClub - Recipe', recipe,userEmail:request.user?request.user.email:null });
+        response.render('recipe', { title: 'CookBookClub - Recipe', recipe, userEmail: request.user ? request.user.email : null });
     } catch (error) {
         response.status(500).send({ message: error.message || "Error Occured" })
     }
 }
 
-exports.updateRecipe=async(request,response)=>{
-    try{
-        let recipeID=request.params.id;
+/**
+ * GET /recipe/:id/edit
+ * Update Recipe
+ */
+exports.updateRecipe = async (request, response) => {
+    try {
+        let recipeID = request.params.id;
         let recipe = await Recipe.findById(recipeID)
         let infoErrorObj = request.flash('infoErrors')
         let infoSubmitObj = request.flash('infoSubmit')
         if (!recipe) {
             return response.status(404).send('Recipe not found');
         }
-        response.render('updateRecipe', {title:"CookBookClub - Update Recipe", recipe,infoErrorObj,infoSubmitObj });
-    }catch (error) {
+        response.render('updateRecipe', { title: "CookBookClub - Update Recipe", recipe, infoErrorObj, infoSubmitObj });
+    } catch (error) {
         console.error(error);
         response.status(500).send('Server error');
     }
 }
 
-
-// Update Recipe - Handle PUT Request
+/**
+ * POST /recipe/:id
+ * Updated Recipe
+ */
 exports.handleUpdateRecipe = async (req, res) => {
-    // try {
-    //     const { title, ingredients, instructions } = req.body;
-
-    //     // Find the recipe by ID and update it
-    //     const updatedRecipe = await Recipe.findByIdAndUpdate(
-    //         req.params.id,
-    //         { title, ingredients, instructions },
-    //         { new: true, runValidators: true }
-    //     );
-
-    //     if (!updatedRecipe) {
-    //         return res.status(404).send('Recipe not found');
-    //     }
-
-    //     // Redirect to the updated recipe page or another page
-    //     res.redirect(`/recipe/${updatedRecipe._id}`);
-    // } catch (error) {
-    //     console.error(error);
-    //     res.status(500).send('Server Error');
-    // }
-
     const id = req.params.id;
-    let newImageName = req.body.image; // Use the existing image if no new image is uploaded
-
-    if (req.file) {
-        newImageName = Date.now() + req.file.filename;
-        const uploadPath = require('path').resolve('./') + '/public/uploads/' + newImageName;
+    let newImageName = req.body.existingImage; // Use the existing image if no new image is uploaded
+    console.log("Existing Image:", newImageName);
+    console.log('Request body:', req.body);
+    console.log('Files in request:', req.files);
+    if (req.files&&req.files.image) {
+        const uploadedImage = req.files.image;
+        console.log('Uploaded Image:', uploadedImage);
+        newImageName = Date.now() + '-' + uploadedImage.name;
+        const uploadPath = path.resolve('C://Users//LENOVO//OneDrive//Desktop//CookBookClub//public//uploads//' + newImageName);
 
         try {
-            await new Promise((resolve, reject) => {
-                req.file.mv(uploadPath, (err) => {
-                    if (err) {
-                        console.error("File upload error: ", err);
-                        reject(err);
-                    } else {
-                        console.log("File uploaded successfully");
-                        resolve();
-                    }
-                });
-            });
+            await uploadedImage.mv(uploadPath);
+            console.log("File uploaded successfully");
 
             // Remove the old image if a new image is uploaded
-            if (req.body.image) {
-                fs.unlinkSync('./public/uploads/' + req.body.image);
+            if (req.body.existingImage) {
+                const oldImagePath = path.resolve('C://Users//LENOVO//OneDrive//Desktop//CookBookClub//public//uploads//' + req.body.existingImage);
+                if (fs.existsSync(oldImagePath)) {
+                    fs.unlinkSync(oldImagePath); // Delete the old image
+                }
             }
         } catch (error) {
             console.error("Error handling file upload: ", error);
@@ -167,15 +148,13 @@ exports.handleUpdateRecipe = async (req, res) => {
             category: req.body.category,
             image: newImageName
         }, { new: true, runValidators: true });
+        console.log("Updated Recipe:", updatedRecipe);
 
         if (!updatedRecipe) {
             return res.status(404).send('Recipe not found');
         }
 
-        req.session.message = {
-            type: 'success',
-            message: 'Recipe updated successfully'
-        };
+        req.flash('success', 'Recipe updated successfully');
 
         res.redirect(`/recipe/${updatedRecipe._id}`);
     } catch (error) {
@@ -185,6 +164,46 @@ exports.handleUpdateRecipe = async (req, res) => {
 };
 
 
+
+/**
+ * GET /delete
+ * Delete Recipe
+ */
+exports.deleteRecipe = async (request, response) => {
+    try {
+        let id = request.params.id;
+        
+        // Find the recipe and delete it
+        const result = await Recipe.findByIdAndDelete(id);
+        
+        // If the recipe has an associated image, check if the image file exists and delete it
+        if (result && result.image != "") {
+            const imagePath = 'C://Users//LENOVO//OneDrive//Desktop//CookBookClub//public//uploads//' + result.image;
+            if (fs.existsSync(imagePath)) {
+                try {
+                    fs.unlinkSync(imagePath);
+                    console.log('Image deleted successfully.');
+                } catch (error) {
+                    console.log('Error deleting image:', error);
+                }
+            } else {
+                console.log('Image not found:', imagePath);
+            }
+        }
+
+        // Set a flash message for success
+        request.flash('success', 'Recipe deleted successfully');
+        
+        // Redirect to the home page
+        response.redirect("/");
+
+    } catch (error) {
+        // Handle errors that occur during the deletion process
+        console.log('Error deleting recipe:', error);
+        request.flash('error', 'Error deleting the recipe');
+        response.redirect('/');
+    }
+};
 
 /**  
  * POST /search
@@ -312,33 +331,48 @@ exports.submitRecipeOnPost = async (request, response) => {
 };
 
 
-// Render login page
+/**
+ * GET /login
+ * Login Page
+ */
 exports.loginPage = (req, res) => {
-    res.render('login',{layout:false}); // Make sure there's a corresponding login.ejs file
+    res.render('login', { layout: false }); // Make sure there's a corresponding login.ejs file
 };
 
-// Handle login
+/**
+ * POST /login
+ * Handel Login Page
+ */
 exports.loginUser = (req, res, next) => {
     console.log(res.locals.redirectUrl)
     req.flash('success', 'You are successfully logged in to your account')
     res.redirect(res.locals.redirectUrl)
 };
 
+/**
+ * GET /logout
+ */
 exports.logoutUser = (request, response) => {
     request.logout(error => {
-        if(error) return next(error);
+        if (error) return next(error);
 
         request.flash('success', 'You are successfully logged out of your account')
         response.redirect('/');
     })
 }
 
-// Render signup page
+/**
+ * GET /signup
+ * Signup Page
+ */
 exports.signupPage = (req, res) => {
-    res.render('signup',{layout:false}); // Make sure there's a corresponding signup.ejs file
+    res.render('signup', { layout: false }); // Make sure there's a corresponding signup.ejs file
 };
 
-// Handle signup
+/**
+ * POST /signup
+ * Handle Signup
+ */
 exports.signupUser = async (req, res) => {
     const { name, email, password } = req.body;
 

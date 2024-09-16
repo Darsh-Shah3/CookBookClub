@@ -37,7 +37,7 @@
                     </div>
                     <% } %>
                         <div class="col-8">
-                            <form action="/recipe/<%= recipe._id %>" method="POST">
+                            <form action="/recipe/<%= recipe._id %>" method="POST" enctype="multipart/form-data">
                                 <div class="row g-3">
                                     <div class="col-12">
                                         <label for="name" class="form-label">Recipe Name</label>
@@ -84,7 +84,8 @@
                                         <input type="file" class="form-control mt-2" name="image" accept="image/*">
                                          <!-- Display existing image if available -->
                                          <% if (recipe.image) { %>
-                                            <img src="/uploads/<%= recipe.image %>" width="100" class="img-thumbnail mt-1" alt="Current Recipe Image">
+                                            <img  src="/uploads/<%= recipe.image %>" width="100" class="img-thumbnail mt-1" alt="<%= recipe.name %>">
+                                            <input type="hidden" name="existingImage" value="<%= recipe.image %>">
                                         <% } %>
                                     </div>
                                     <!-- Add other fields as necessary -->

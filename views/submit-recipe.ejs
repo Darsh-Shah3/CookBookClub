@@ -4,11 +4,12 @@
         textarea,
         select {
             padding: 10px;
-            border-radius: 5px; 
+            border-radius: 5px;  
             border: 1px solid #ccc;
             width: 100%;
             box-sizing: border-box;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 20px; /* Increased bottom padding for all fields */
         }
 
         input:hover,
@@ -17,6 +18,25 @@
             transform: scale(1.05);
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
         }
+
+        .submit-btn {
+            height: 60px; /* Increased height */
+            font-size: 1.25rem; /* Increased font size */
+        }
+
+        .form-container {
+            padding: 20px;
+        }
+
+        .btn-ingredient {
+            font-size: 1rem; /* Adjust font size */
+            padding: 5px 20px; /* Adjust padding */
+            margin-top: 5px;
+        }
+
+        .ingredientDiv {
+            margin-bottom: 0; /* No bottom margin to reduce space */
+        }
     </style>
 </head>
 
@@ -24,83 +44,79 @@
     <div class="px-4 py-5 my-5 text-center">
         <h1 class="display-5 fw-bold">Submit Your Recipe</h1>
         <div class="col-lg-6 mx-auto">
-            <p class="lead">Share youe amazing recipies to the users across the world. Fill our form to get started.</p>
+            <p class="lead">Share your amazing recipes with users across the world. Fill out our form to get started.</p>
         </div>
     </div>
 
-    <div class="row justify-center">
+    <div class="row justify-content-center form-container">
 
         <% if(infoSubmitObj !='' ) { %>
             <div class="col-8 alert alert-success" role="alert">
                 <%= infoSubmitObj %>
             </div>
-            <% } %>
+        <% } %>
 
-                <% if(infoErrorObj !='' ) { %>
-                    <div class="col-8 alert alert-danger" role="alert">
-                        <%= infoErrorsObj[0].message %>
+        <% if(infoErrorObj !='' ) { %>
+            <div class="col-8 alert alert-danger" role="alert">
+                <%= infoErrorsObj[0].message %>
+            </div>
+        <% } %>
+
+        <div class="col-8">
+            <form action="/submit-recipe" enctype="multipart/form-data" method="POST">
+                <div class="row g-3">
+                    <div class="col-12 mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" name="email" id="email" class="form-control">
                     </div>
-                    <% } %>
 
+                    <div class="col-12 mb-3">
+                        <label for="name" class="form-label">Recipe Name</label>
+                        <input type="text" name="name" id="name" class="form-control" required>
+                    </div>
 
-                        <div class="col-8">
-                            <form action="/submit-recipe" enctype="multipart/form-data" method="POST">
-                                <div class="row g-3">
-                                    <div class="col-12">
-                                        <label for="email" class="form-label">Email</label>
-                                        <input type="email" name="email" id="email" class="form-control">
-                                    </div>
+                    <div class="col-12 mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea name="description" id="description" cols="38" rows="4"
+                            class="form-control"></textarea>
+                    </div>
 
-                                    <div class="col-12">
-                                        <label for="name" class="form-label">Recipe Name</label>
-                                        <input type="text" name="name" id="name" class="form-control" required>
-                                    </div>
-
-                                    <div class="col-12">
-                                        <label for="description" class="form-label">Description</label>
-                                        <textarea name="description" id="description" cols="38" rows="4"
-                                            class="form-control"></textarea>
-                                    </div>
-
-                                    <div class="col-12">
-                                        <label for="name" class="form-label">Ingredients</label><br>
-                                        <small>Exaple: Ice</small>
-                                        <div class="ingredientList">
-                                            <div class="ingredientDiv mb-1">
-                                                <input type="text" name="ingredients" class="form-control">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-12">
-                                        <button type="button" class="btn btn-outline-primary" id="addIngredientsBtn">+
-                                            Ingredient</button>
-                                    </div>
-
-
-                                    <div class="col-12">
-                                        <label for="category">Select Category</label>
-                                        <select name="category" arial-label="Category" class="form-select form-control">
-                                            <option selected>Select Category</option>
-                                            <option value="Thai">Thai</option>
-                                            <option value="American">American</option>
-                                            <option value="Chinese">Chinese</option>
-                                            <option value="Mexican">Mexcian</option>
-                                            <option value="Indian">Indian</option>
-                                            <option value="Spanish">Spanish</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="col-12">
-                                        <label for="image">Product Image</label>
-                                        <input type="file" class="form-control" name="image" accept="image/*">
-                                    </div>
-
-                                    <div class="col-12">
-                                        <button type="submit" class="btn btn-primary">Submit Recipe</button>
-                                    </div>
-                                </div>
-                            </form>
+                    <div class="col-12 mb-3">
+                        <label for="ingredients" class="form-label">Ingredients</label><br>
+                        <div class="ingredientList">
+                            <div class="ingredientDiv">
+                                <input type="text" name="ingredients" class="form-control">
+                            </div>
                         </div>
+                    </div>
+
+                    <div class="col-12 mb-3">
+                        <button type="button" class="btn btn-outline-secondary btn-sm btn-ingredient" id="addIngredientsBtn">+ Ingredient</button>
+                    </div>
+
+                    <div class="col-12 mb-3">
+                        <label for="category">Select Category</label>
+                        <select name="category" aria-label="Category" class="form-select form-control">
+                            <option selected>Select Category</option>
+                            <option value="Thai">Thai</option>
+                            <option value="American">American</option>
+                            <option value="Chinese">Chinese</option>
+                            <option value="Mexican">Mexican</option>
+                            <option value="Indian">Indian</option>
+                            <option value="Spanish">Spanish</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12 mb-3">
+                        <label for="image">Product Image</label>
+                        <input type="file" class="form-control" name="image" accept="image/*">
+                    </div>
+
+                    <div class="col-12 d-flex justify-content-center">
+                        <button type="submit" class="btn btn-dark btn-lg px-4 submit-btn">Submit Recipe</button>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 </body>

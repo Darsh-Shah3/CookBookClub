@@ -1,18 +1,46 @@
-<h1 class="pb-4">Explore Latest</h1>
+<style>
+    .container {
+            padding: 20px;
+        }
+        .heading {
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 40px; /* Adjust as needed */
+        }
+        .recipe-grid {
+            margin-bottom: 40px; /* Adjust as needed */
+        }
+        .category__link {
+            text-decoration: none;
+            color: inherit;
+        }
+        .category__image img {
+            width: 100%;
+            height: auto;
+        }
+        .pt-1 {
+            padding-top: 0.5rem;
+        }
+</style>
+<body>
+    <div class="container">
+        <h1 class="heading">Explore Latest</h1>
 
-<div class="row row-cols-2 row-cols-lg-5 g-2 g-lg-3 mb-4">
-    <% if(recipe!=""){ %>
-        <% recipe.forEach((recipe,index)=>{ %>
-            <a href="/recipe/<%= recipe._id %>" class="col text-center category__link">
-                <div class="category__image category__image--large shadow">
-                    <img src="/uploads/<%= recipe.image %>" alt="<%= recipe.name %>" loading="lazy">
-                </div>
-                <div class="pt-1">
-                    <%= recipe.name %>
-                </div>
-            </a>
-            <% }) %>
-                <% }else{ %>
-                    <p>No Items Found.</p>
-                    <% } %>
-</div>
+        <div class="row row-cols-2 row-cols-lg-5 g-2 g-lg-3 recipe-grid">
+            <% if(recipe!=""){ %>
+                <% recipe.forEach((recipe,index)=>{ %>
+                    <a href="/recipe/<%= recipe._id %>" class="col text-center category__link">
+                        <div class="category__image category__image--large shadow">
+                            <img src="/uploads/<%= recipe.image %>" alt="<%= recipe.name %>" loading="lazy">
+                        </div>
+                        <div class="pt-1">
+                            <%= recipe.name %>
+                        </div>
+                    </a>
+                <% }) %>
+            <% }else{ %>
+                <p>No Items Found.</p>
+            <% } %>
+        </div>
+    </div>
+</body>

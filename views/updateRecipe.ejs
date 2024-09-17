@@ -1,15 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <title>Update Recipe</title>
     <style>
         input,
         textarea,
         select {
             padding: 10px;
-            border-radius: 5px;
+            border-radius: 5px;  
             border: 1px solid #ccc;
             width: 100%;
-            box-sizing: border-box; 
+            box-sizing: border-box;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 20px; /* Increased bottom padding for all fields */
         }
+        
 
         input:hover,
         textarea:hover,
@@ -17,84 +27,107 @@
             transform: scale(1.05);
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
         }
+
+        .submit-btn {
+            height: 60px; /* Increased height */
+            font-size: 1.25rem; /* Increased font size */
+        }
+
+        .form-container {
+            padding: 20px;
+        }
+
+        .ingredientDiv {
+            margin-bottom: 0; /* No bottom margin to reduce space */
+        }
     </style>
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 
 <body>
     <div class="px-4 py-5 my-5 text-center">
-        <h1 class="display-5 fw-bold">Update <%=recipe.name%></h1>
+        <h1 class="display-5 fw-bold">Update <%= recipe.name %></h1>
+        <div class="col-lg-6 mx-auto">
+            <p class="lead">Update your recipe details below. Ensure all fields are filled correctly.</p>
+        </div>
     </div>
-    <div class="row justify-center">
-        <% if(infoSubmitObj !='' ) { %>
+
+    <div class="row justify-content-center form-container">
+        <% if (infoSubmitObj != '') { %>
             <div class="col-8 alert alert-success" role="alert">
                 <%= infoSubmitObj %>
             </div>
-            <% } %>
+        <% } %>
 
-                <% if(infoErrorObj !='' ) { %>
-                    <div class="col-8 alert alert-danger" role="alert">
-                        <%= infoErrorsObj[0].message %>
+        <% if (infoErrorObj != '') { %>
+            <div class="col-8 alert alert-danger" role="alert">
+                <%= infoErrorsObj[0].message %>
+            </div>
+        <% } %>
+
+        <div class="col-8">
+            <form action="/recipe/<%= recipe._id %>" method="POST" enctype="multipart/form-data">
+                <div class="row g-3">
+                    <div class="col-12 mb-3">
+                        <label for="name" class="form-label">Recipe Name</label>
+                        <input type="text" name="name" id="name" class="form-control" value="<%- recipe.name %>" required>
                     </div>
-                    <% } %>
-                        <div class="col-8">
-                            <form action="/recipe/<%= recipe._id %>" method="POST" enctype="multipart/form-data">
-                                <div class="row g-3">
-                                    <div class="col-12">
-                                        <label for="name" class="form-label">Recipe Name</label>
-                                        <input type="text" name="name" id="name" class="form-control" value="<%-recipe.name%>" required>
-                                    </div>
 
-                                    <div class="col-12">
-                                        <label for="description" class="form-label">Description</label>
-                                        <textarea name="description" id="description" cols="38" rows="4"
-                                            class="form-control"><%- recipe.description %></textarea>
-                                    </div>
+                    <div class="col-12 mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea name="description" id="description" cols="38" rows="4"
+                            class="form-control"><%- recipe.description %></textarea>
+                    </div>
 
-                                    <div class="col-12">
-                                        <label for="name" class="form-label">Ingredients</label><br>
-                                        <small>Example: Ice</small>
-                                        <div class="ingredientList">
-                                            <% recipe.ingredients.forEach(function(ingredient, index) { %>
-                                                <div class="ingredientDiv mb-1">
-                                                    <input type="text" name="ingredients" class="form-control" value="<%= ingredient %>">
-                                                </div>
-                                            <% }); %>
-                                        </div>
-                                    </div>
-                                    <div class="col-12">
-                                        <button type="button" class="btn btn-outline-primary" id="addIngredientsBtn">+
-                                            Ingredient</button>
-                                    </div>
-                                    <div class="col-12">
-                                        <label for="category">Select Category</label>
-                                        <select name="category" arial-label="Category" class="form-select form-control">
-                                            <option value="" <%= recipe.category === '' ? 'selected' : '' %>>Select Category</option>
-                                            <option value="Thai" <%= recipe.category === 'Thai' ? 'selected' : '' %>>Thai</option>
-                                            <option value="American" <%= recipe.category === 'American' ? 'selected' : '' %>>American</option>
-                                            <option value="Chinese" <%= recipe.category === 'Chinese' ? 'selected' : '' %>>Chinese</option>
-                                            <option value="Mexican" <%= recipe.category === 'Mexican' ? 'selected' : '' %>>Mexican</option>
-                                            <option value="Indian" <%= recipe.category === 'Indian' ? 'selected' : '' %>>Indian</option>
-                                            <option value="Spanish" <%= recipe.category === 'Spanish' ? 'selected' : '' %>>Spanish</option>
-                                        </select>
-                                    </div>
-                                    
-                                    <div class="col-12">
-                                        <label for="image">Product Image</label>
-                                        <!-- File input for new image -->
-                                        <input type="file" class="form-control mt-2" name="image" accept="image/*">
-                                         <!-- Display existing image if available -->
-                                         <% if (recipe.image) { %>
-                                            <img  src="/uploads/<%= recipe.image %>" width="100" class="img-thumbnail mt-1" alt="<%= recipe.name %>">
-                                            <input type="hidden" name="existingImage" value="<%= recipe.image %>">
-                                        <% } %>
-                                    </div>
-                                    <!-- Add other fields as necessary -->
-
-                                    <div class="col-12">
-                                        <button type="submit" class="btn btn-success">Update Recipe</button>
-                                    </div>
+                    <div class="col-12 mb-3">
+                        <label for="ingredients" class="form-label">Ingredients</label><br>
+                        <small class="d-block mb-2">Example: Ice</small>
+                        <div class="ingredientList">
+                            <% recipe.ingredients.forEach(function(ingredient, index) { %>
+                                <div class="ingredientDiv">
+                                    <input type="text" name="ingredients" class="form-control" value="<%= ingredient %>">
                                 </div>
-                            </form>
+                            <% }); %>
                         </div>
+                    </div>
+
+                    <div class="col-12 mb-3">
+                        <button type="button" class="btn btn-outline-secondary btn-sm btn-ingredient" id="addIngredientsBtn">+ Ingredient</button>
+                    </div>
+
+                    <div class="col-12 mb-3">
+                        <label for="category">Select Category</label>
+                        <select name="category" aria-label="Category" class="form-select form-control">
+                            <option value="" <%= recipe.category === '' ? 'selected' : '' %>>Select Category</option>
+                            <option value="Thai" <%= recipe.category === 'Thai' ? 'selected' : '' %>>Thai</option>
+                            <option value="American" <%= recipe.category === 'American' ? 'selected' : '' %>>American</option>
+                            <option value="Chinese" <%= recipe.category === 'Chinese' ? 'selected' : '' %>>Chinese</option>
+                            <option value="Mexican" <%= recipe.category === 'Mexican' ? 'selected' : '' %>>Mexican</option>
+                            <option value="Indian" <%= recipe.category === 'Indian' ? 'selected' : '' %>>Indian</option>
+                            <option value="Spanish" <%= recipe.category === 'Spanish' ? 'selected' : '' %>>Spanish</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12 mb-3">
+                        <label for="image" class="form-label">Product Image</label>
+                        <input type="file" class="form-control" name="image" accept="image/*">
+                        <% if (recipe.image) { %>
+                            <img src="/uploads/<%= recipe.image %>" width="100" class="img-thumbnail mt-2" alt="<%= recipe.name %>">
+                            <input type="hidden" name="existingImage" value="<%= recipe.image %>">
+                        <% } %>
+                    </div>
+
+                    <div class="col-12 d-flex justify-content-center">
+                        <button type="submit" class="btn btn-dark btn-lg px-4 submit-btn">Update Recipe</button>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
 </body>
+
+</html>

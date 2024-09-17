@@ -9,6 +9,10 @@ const { authenticationCheck,saveRedirectUrl } = require('../middleware/authantic
 
 // Home page 
 router.get('/', recipeController.homepage); 
+
+// Route for the About Us page
+router.get('/aboutUs', recipeController.aboutUsPage);
+
 // Particular Recipe
 router.get('/recipe/:id', recipeController.exploreRecipe);
 

@@ -22,48 +22,50 @@
 <body>
 
     <div class="container-xxl px-md-5 bg-white shadow-lg">
-        <section id="header">
-            <header
-                class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
-                <a href="/" class="d-flex align-items-center col-md-3 mb-md-0 text-dark text-decoration-none">
-                    <img src="/img/logo.svg" alt="CookBookClub" height="68" width="229">
-                </a>
+        <div class="container-xxl px-md-5 bg-white position-sticky" style="top: 0; z-index: 1030;">
+            <section id="header">
+                <header
+                    class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+                    <a href="/"
+                        class="d-flex align-items-center col-md-3 mb-md-0 text-dark text-decoration-none logo-link">
+                        <img src="/img/logo-no-background.png" alt="CookBookClub" height="50" width="280" class="me-2">
+                    </a>
 
-                <ul class="nav col-12 col-md-auto mb-2 juatify-content-center mb-md-0">
-                    <li><a href="/" class="nav-link px-2 link-secondary">Home</a></li>
-                    <li><a href="#footer" class="nav-link px-2 link-secondary">About</a></li>
-                    <li><a href="/submit-recipe" class="nav-link px-2 link-secondary">Submit</a></li>
-                    <li><a href="#footer" class="nav-link px-2 link-secondary">Contact</a></li>
+                    <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+                        <li><a href="/" class="nav-link px-2 link-secondary">Home</a></li>
+                        <li><a href="/aboutUs" class="nav-link px-2 link-secondary">About</a></li>
+                        <li><a href="/submit-recipe" class="nav-link px-2 link-secondary">Submit</a></li>
+                        <li><a href="#footer" class="nav-link px-2 link-secondary">Contact</a></li>
 
-                    <% if (currentUser) { %>
-                        <li><a href="/logout" class="nav-link px-2 link-secondary">Logout</a></li>
+                        <% if (currentUser) { %>
+                            <li><a href="/logout" class="nav-link px-2 link-secondary">Logout</a></li>
+                            <% } else { %>
+                                <li><a href="/login" class="nav-link px-2 link-secondary">Login</a></li>
+                                <% } %>
+                    </ul>
 
-                        <% } else { %>
-                            <li><a href="/login" class="nav-link px-2 link-secondary">Login</a></li>
-                            <% } %>
+                    <div class="col-md-3 text-end">
+                        <form method="POST" action="/search">
+                            <input type="search" name="searchTerm" class="form-control" placeholder="Search..."
+                                aria-label="Search">
+                        </form>
+                    </div>
+                </header>
+            </section>
+        </div>
 
-                </ul>
-
-                <div class="col-md-3 text-end">
-                    <form method="POST" action="/search">
-                        <input type="search" name="searchTerm" class="form-control" placeholder="Search..."
-                            aria-label="Search">
-                    </form>
-                </div>
-            </header>
-        </section>
 
         <section id="main-hero">
             <main>
                 <%- include('../includes/flash') %>
-                <%- body -%>
+                    <%- body -%>
             </main>
         </section>
-        
+
         <section id="footer" class="my-5 py-2 pb-4">
             <footer class="py-5 bg-light w-100">
                 <div class="container">
-                    <div class="row">
+                    <div class="row d-flex justify-content-evenly">
                         <!-- About Us Section -->
                         <div class="col-lg-4 col-md-6 mb-4">
                             <h5>About Us</h5>
@@ -137,17 +139,6 @@
                                     </svg>
                                 </a>
                             </div>
-                        </div>
-
-                        <!-- Quick Links Section -->
-                        <div class="col-lg-4 col-md-3 mb-4">
-                            <h5>Quick Links</h5>
-                            <ul class="list-unstyled">
-                                <li><a href="/" class="link-dark">Home</a></li>
-                                <li><a href="/about" class="link-dark">About Us</a></li>
-                                <li><a href="/submit-recipe" class="link-dark">Submit Recipe</a></li>
-                                <li><a href="/contact" class="link-dark">Contact Us</a></li>
-                            </ul>
                         </div>
 
                         <!-- Contact Us Section -->

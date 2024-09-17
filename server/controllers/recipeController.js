@@ -417,31 +417,9 @@ exports.signupUser = async (req, res) => {
 };
 
 
-// async function updateRecipe(){
-//     try {
-//         const response = await Recipe.updateOne({name:'New Recipe'},{name:'New Recipe Updated'})
-//         response.n; // Number of documents matched
-//         response.nModified;// Number of documents modified
-//     } catch (error) {
-//         console.log(error);
-//     }
-// }
-// updateRecipe()
-
-
-// async function deleteRecipe(){
-//     try {
-//         await Recipe.deleteOne({name:'New Recipe Updated'})
-//         response.n; // Number of documents matched
-//         response.nModified;// Number of documents modified
-//     } catch (error) {
-//         console.log(error);
-//     }
-// }
-// updateRecipe()
-
-
-
+exports.aboutUsPage = (req, res) => {
+    res.render('aboutus');
+};
 
 // async function insertDummyCategoryData(){
 //     try{

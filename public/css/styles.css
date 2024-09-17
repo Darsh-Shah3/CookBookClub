@@ -12,8 +12,15 @@ body {
     background-color: rgb(243,243,243);
     font-size: 18px;
     font-weight: 600;
+} 
+
+h1,h2,h3,h4,h5,h6{
+    font-weight: 600;
 }
 
+p,a,ul,li{
+    font-weight: 300;
+}
 a {
     color: var(--bs-dark);
 }
@@ -76,7 +83,7 @@ footer h1, footer h2, footer h3, footer h4, footer h5, footer h6 {
     font-weight: 700; /* Heavier weight for all headings in footer */
 }
 
-footer p, footer span, footer a {
+footer p, footer span {
     font-weight: 400; /* Lighter weight for content */
 }
 
@@ -85,7 +92,38 @@ footer p {
     margin-bottom: 10px;
 }
 
-footer a {
-    text-decoration: none;
-    color: var(--bs-dark);
+
+
+/* Initial hidden state off-screen to the right */
+.animate-from-right {
+    opacity: 0; /* Initially hidden */
+    transform: translateX(100px); /* Start position (off-screen) */
+    transition: transform 0.6s ease-out, opacity 0.6s ease-out; /* Animation duration and easing */
+}
+
+/* State when in view */
+.animate-from-right.in-view {
+    opacity: 1; /* Fully visible */
+    transform: translateX(0); /* Final position */
+}
+
+
+.section-heading {
+    font-weight: 600;
+    margin-bottom: 0.5rem; /* Reduced space below heading */
+}
+
+.section-content {
+    font-weight: 300; /* Light black (dark gray) for content */
+    line-height: 1.6; /* Increase line height for better readability */
+    margin-bottom: 1rem; /* Space below content */
+}
+
+.list-group-item {
+    padding: 0.75rem 1.25rem; /* Ensure consistent padding inside list items */
+}
+
+/* Additional styling to control spacing specifically for the recipe section */
+.content-section {
+    margin-bottom: 1rem; /* Control the margin for each content section */
 }

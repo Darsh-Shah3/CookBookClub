@@ -7,10 +7,10 @@ const bcrypt = require('bcrypt');
 const passport = require('passport');
 const { sendWelcomeEmail } = require('../utils/mailer');
 const fs = require('fs');
-const path=require('path');
+const path = require('path');
 
 /**  
- * GET /
+ * GET / 
  * Homepage
 */
 exports.homepage = async (request, response) => {
@@ -117,7 +117,7 @@ exports.handleUpdateRecipe = async (req, res) => {
     console.log("Existing Image:", newImageName);
     console.log('Request body:', req.body);
     console.log('Files in request:', req.files);
-    if (req.files&&req.files.image) {
+    if (req.files && req.files.image) {
         const uploadedImage = req.files.image;
         console.log('Uploaded Image:', uploadedImage);
         newImageName = Date.now() + '-' + uploadedImage.name;
@@ -172,10 +172,10 @@ exports.handleUpdateRecipe = async (req, res) => {
 exports.deleteRecipe = async (request, response) => {
     try {
         let id = request.params.id;
-        
+
         // Find the recipe and delete it
         const result = await Recipe.findByIdAndDelete(id);
-        
+
         // If the recipe has an associated image, check if the image file exists and delete it
         if (result && result.image != "") {
             const imagePath = 'C://Users//LENOVO//OneDrive//Desktop//CookBookClub//public//uploads//' + result.image;
@@ -193,7 +193,7 @@ exports.deleteRecipe = async (request, response) => {
 
         // Set a flash message for success
         request.flash('success', 'Recipe deleted successfully');
-        
+
         // Redirect to the home page
         response.redirect("/");
 
@@ -416,241 +416,296 @@ exports.signupUser = async (req, res) => {
     }
 };
 
-
+/** 
+ * GET /aboutUs
+ * About Us 
+ */
 exports.aboutUsPage = (req, res) => {
     res.render('aboutus');
 };
 
-// async function insertDummyCategoryData(){
-//     try{
-//         await Category.insertMany([
-//             {name:'Thai',image:'thai-food.jpg'},
-//             {name:'American',image:'american-food.jpg'},
-//             {name:'Chinese',image:'chinese-food.jpg'},
-//             {name:'Mexican',image:'mexican-food.jpg'},
-//             {name:'Indian',image:'indian-food.jpg'},
-//             {name:'Spanish',image:'spanish-food.jpg'}
-//           ])
-//     }
-//     catch(error){
-//         console.log("error : "+error);
-//     }
-// }
 
+/** 
+ * Dummy Category Data
+ */
+
+async function insertDummyCategoryData() {
+    try {
+        await Category.insertMany([
+            { name: 'Indian', image: 'indian-food.jpg' },
+            { name: 'Thai', image: 'thai-food.jpg' },
+            { name: 'American', image: 'american-food.jpg' },
+            { name: 'Chinese', image: 'chinese-food.jpg' },
+            { name: 'Mexican', image: 'mexican-food.jpg' },
+            { name: 'Spanish', image: 'spanish-food.jpg' }
+        ])
+    }
+    catch (error) {
+        console.log("error : " + error);
+    }
+}
 // insertDummyCategoryData()
 
 
-// async function insertDummyRecipeData() {
-//     try {
-//         await Recipe.insertMany([
-//             {
-//                 name: "Spicy Thai Curry",
-//                 description: "A traditional Thai curry made with coconut milk, red curry paste, and a variety of vegetables and proteins.",
-//                 email: "chef.thai@example.com",
-//                 ingredients: [
-//                     "Coconut milk",
-//                     "Red curry paste",
-//                     "Chicken",
-//                     "Basil",
-//                     "Lime leaves",
-//                     "Fish sauce"
-//                 ],
-//                 category: "Thai",
-//                 image: "Spicy Thai Curry.jpg"
-//             },
-//             {
-//                 name: "American Cheeseburger",
-//                 description: "A classic cheeseburger with a juicy beef patty, melted cheddar cheese, lettuce, tomato, and a toasted bun.",
-//                 email: "burgerking@example.com",
-//                 ingredients: [
-//                     "Ground beef",
-//                     "Cheddar cheese",
-//                     "Lettuce",
-//                     "Tomato",
-//                     "Buns",
-//                     "Ketchup"
-//                 ],
-//                 category: "American",
-//                 image: "American Cheeseburger.jpg"
-//             },
-//             {
-//                 name: "Kung Pao Chicken",
-//                 description: "A spicy, stir-fried Chinese dish made with chicken, peanuts, vegetables, and chili peppers.",
-//                 email: "kungpao.master@example.com",
-//                 ingredients: [
-//                     "Chicken",
-//                     "Peanuts",
-//                     "Bell peppers",
-//                     "Chili peppers",
-//                     "Soy sauce",
-//                     "Ginger"
-//                 ],
-//                 category: "Chinese",
-//                 image: "Kung Pao Chicken.jpg"
-//             },
-//             {
-//                 name: "Mexican Tacos",
-//                 description: "Traditional Mexican tacos filled with seasoned beef, fresh salsa, and guacamole.",
-//                 email: "taco.loco@example.com",
-//                 ingredients: [
-//                     "Tortillas",
-//                     "Ground beef",
-//                     "Salsa",
-//                     "Guacamole",
-//                     "Cilantro",
-//                     "Lime"
-//                 ],
-//                 category: "Mexican",
-//                 image: "Mexican Tacos.jpg"
-//             },
-//             {
-//                 name: "Indian Butter Chicken",
-//                 description: "A rich, creamy Indian dish made with chicken, tomato sauce, cream, and a blend of traditional spices.",
-//                 email: "indian.spice@example.com",
-//                 ingredients: [
-//                     "Chicken",
-//                     "Tomato sauce",
-//                     "Cream",
-//                     "Butter",
-//                     "Garam masala",
-//                     "Cilantro"
-//                 ],
-//                 category: "Indian",
-//                 image: "Indian Butter Chicken.jpg"
-//             },
-//             {
-//                 name: "Paella Valenciana",
-//                 description: "A traditional Spanish rice dish made with saffron, seafood, chicken, and a variety of vegetables.",
-//                 email: "paella.master@example.com",
-//                 ingredients: [
-//                     "Saffron",
-//                     "Rice",
-//                     "Shrimp",
-//                     "Chicken",
-//                     "Bell peppers",
-//                     "Green beans",
-//                     "Olive oil"
-//                 ],
-//                 category: "Spanish",
-//                 image: "Paella Valenciana.jpg"
-//             },
-//             {
-//                 name: "Chinese Steak Tofu Stew",
-//                 description: "A flavorful stew with steak and tofu cooked in a savory sauce.",
-//                 email: "example@domain.com",
-//                 ingredients: ["steak", "tofu", "soy sauce", "ginger", "garlic"],
-//                 category: "Chinese",
-//                 image: "chinese-steak-tofu-stew.jpg"
-//             },
-//             {
-//                 name: "Chocolate Banoffee Whoopie Pies",
-//                 description: "Delicious whoopie pies filled with chocolate and banoffee.",
-//                 email: "example@domain.com",
-//                 ingredients: ["flour", "cocoa powder", "banoffee", "chocolate"],
-//                 category: "Dessert",
-//                 image: "chocolate-banoffe-whoopie-pies.jpg"
-//             },
-//             {
-//                 name: "Crab Cakes",
-//                 description: "Crispy and flavorful crab cakes perfect for any occasion.",
-//                 email: "example@domain.com",
-//                 ingredients: ["crab meat", "breadcrumbs", "egg", "mayonnaise"],
-//                 category: "American",
-//                 image: "crab-cakes.jpg"
-//             },
-//             {
-//                 name: "Grilled Lobster Rolls",
-//                 description: "Tender lobster meat grilled and served in a delicious roll.",
-//                 email: "example@domain.com",
-//                 ingredients: ["lobster", "bread rolls", "butter", "lemon"],
-//                 category: "American",
-//                 image: "grilled-lobster-rolls.jpg"
-//             },
-//             {
-//                 name: "Key Lime Pie",
-//                 description: "A tangy and sweet key lime pie with a graham cracker crust.",
-//                 email: "example@domain.com",
-//                 ingredients: ["key lime juice", "sweetened condensed milk", "egg yolks", "graham crackers"],
-//                 category: "American",
-//                 image: "key-lime-pie.jpg"
-//             },
-//             {
-//                 name: "Southern Fried Chicken",
-//                 description: "Classic southern fried chicken with a crispy, flavorful coating.",
-//                 email: "example@domain.com",
-//                 ingredients: ["chicken", "flour", "buttermilk", "spices"],
-//                 category: "American",
-//                 image: "southern-fried-chicken.jpg"
-//             },
-//             {
-//                 name: "Spring Rolls",
-//                 description: "Fresh and crispy spring rolls filled with vegetables and herbs.",
-//                 email: "example@domain.com",
-//                 ingredients: ["rice paper", "lettuce", "carrots", "cucumber"],
-//                 category: "Chinese",
-//                 image: "spring-rolls.jpg"
-//             },
-//             {
-//                 name: "Stir Fried Vegetables",
-//                 description: "A quick and healthy stir-fry with a mix of fresh vegetables.",
-//                 email: "example@domain.com",
-//                 ingredients: ["bell peppers", "broccoli", "carrots", "soy sauce"],
-//                 category: "Chinese",
-//                 image: "stir-fried-vegetables.jpg"
-//             },
-//             {
-//                 name: "Thai Chinese Inspired Pinch Salad",
-//                 description: "A refreshing salad with Thai and Chinese influences.",
-//                 email: "example@domain.com",
-//                 ingredients: ["lettuce", "cucumber", "herbs", "dressing"],
-//                 category: "Thai",
-//                 image: "thai-chinese-inspired-pinch-salad.jpg"
-//             },
-//             {
-//                 name: "Thai Green Curry",
-//                 description: "A spicy and aromatic green curry with vegetables and meat.",
-//                 email: "example@domain.com",
-//                 ingredients: ["green curry paste", "coconut milk", "chicken", "vegetables"],
-//                 category: "Thai",
-//                 image: "thai-green-curry.jpg"
-//             },
-//             {
-//                 name: "Thai Inspired Vegetable Broth",
-//                 description: "A light and flavorful vegetable broth with Thai flavors.",
-//                 email: "example@domain.com",
-//                 ingredients: ["vegetable stock", "lemongrass", "ginger", "mushrooms"],
-//                 category: "Thai",
-//                 image: "thai-inspired-vegetable-broth.jpg"
-//             },
-//             {
-//                 name: "Thai Red Chicken Soup",
-//                 description: "A spicy and creamy red chicken soup with Thai spices.",
-//                 email: "example@domain.com",
-//                 ingredients: ["red curry paste", "coconut milk", "chicken", "vegetables"],
-//                 category: "Thai",
-//                 image: "thai-red-chicken-soup.jpg"
-//             },
-//             {
-//                 name: "Thai Style Mussels",
-//                 description: "Mussels cooked in a fragrant Thai-style broth.",
-//                 email: "example@domain.com",
-//                 ingredients: ["mussels", "coconut milk", "Thai herbs", "chili"],
-//                 category: "Thai",
-//                 image: "thai-style-mussels.jpg"
-//             },
-//             {
-//                 name: "Veggie Pad Thai",
-//                 description: "A vegetarian version of the classic Pad Thai noodle dish.",
-//                 email: "example@domain.com",
-//                 ingredients: ["rice noodles", "vegetables", "peanuts", "tamarind paste"],
-//                 category: "Thai",
-//                 image: "veggie-pad-thai.jpg"
-//             }
-//         ]);
-//         console.log("Data inserted successfully.");
-//     } catch (error) {
-//         console.error("Error inserting data:", error);
-//     }
-// }
-
+/** 
+ * Dummy Recipe Data
+ */
+async function insertDummyRecipeData() {
+    try {
+        await Recipe.insertMany([
+            {
+                name: "Spicy Thai Curry",
+                description: "A flavorful Thai curry made with coconut milk and a medley of vegetables and aromatic herbs. Perfect for spice lovers!",
+                email: "chefthai@example.com",
+                ingredients: [
+                    "Coconut milk",
+                    "Red curry paste",
+                    "Chicken",
+                    "Basil",
+                    "Lime leaves",
+                    "Fish sauce",
+                    "Coriander"
+                ],
+                category: "Thai",
+                image: "Spicy Thai Curry.jpg"
+            },
+            {
+                name: "American Cheeseburger",
+                description: "A mouthwatering cheeseburger with a juicy beef patty, gooey cheddar, and fresh toppings like lettuce and tomato.",
+                email: "burgerking@example.com",
+                ingredients: [
+                    "Ground beef",
+                    "Cheddar cheese",
+                    "Lettuce",
+                    "Tomato",
+                    "Buns",
+                    "Ketchup",
+                    "Onion rings"
+                ],
+                category: "American",
+                image: "American Cheeseburger.jpg"
+            },
+            {
+                name: "Kung Pao Chicken",
+                description: "A fiery stir-fried dish packed with chicken, crunchy peanuts, and chili peppers, all coated in a savory soy sauce.",
+                email: "kungpaomaster@example.com",
+                ingredients: [
+                    "Chicken",
+                    "Peanuts",
+                    "Bell peppers",
+                    "Chili peppers",
+                    "Soy sauce",
+                    "Ginger",
+                    "Garlic"
+                ],
+                category: "Chinese",
+                image: "Kung Pao Chicken.jpg"
+            },
+            {
+                name: "Mexican Tacos",
+                description: "Authentic tacos with seasoned beef, zesty salsa, and creamy guacamole, served in warm tortillas.",
+                email: "tacomaster@example.com",
+                ingredients: [
+                    "Tortillas",
+                    "Ground beef",
+                    "Salsa",
+                    "Guacamole",
+                    "Cilantro",
+                    "Lime",
+                    "Jalapenos"
+                ],
+                category: "Mexican",
+                image: "Mexican Tacos.jpg"
+            },
+            {
+                name: "Indian Butter Chicken",
+                description: "A creamy, rich Indian dish with tender chicken, butter, tomato, and a blend of spices for a delightful meal.",
+                email: "indianspice@example.com",
+                ingredients: [
+                    "Chicken",
+                    "Tomato sauce",
+                    "Cream",
+                    "Butter",
+                    "Garam masala",
+                    "Cilantro",
+                    "Ginger"
+                ],
+                category: "Indian",
+                image: "Indian Butter Chicken.jpg"
+            },
+            {
+                name: "Paella Valenciana",
+                description: "A Spanish delicacy with saffron-infused rice, succulent seafood, chicken, and an array of vegetables.",
+                email: "paellamaster@example.com",
+                ingredients: [
+                    "Saffron",
+                    "Rice",
+                    "Shrimp",
+                    "Chicken",
+                    "Bell peppers",
+                    "Green beans",
+                    "Olive oil",
+                    "Chorizo"
+                ],
+                category: "Spanish",
+                image: "Paella Valenciana.jpg"
+            },
+            {
+                name: "Chinese Steak Tofu Stew",
+                description: "A savory stew combining tender steak and tofu simmered in a flavorful broth with aromatic spices.",
+                email: "kungpaomaster@example.com",
+                ingredients: ["Steak", "Tofu", "Soy sauce", "Ginger", "Garlic", "Spring onions"],
+                category: "Chinese",
+                image: "chinese-steak-tofu-stew.jpg"
+            },
+            {
+                name: "Crab Cakes",
+                description: "Delicately seasoned crab cakes with a crispy outer shell and tender crab meat inside, perfect as an appetizer.",
+                email: "burgerking@example.com",
+                ingredients: ["Crab meat", "Breadcrumbs", "Egg", "Mayonnaise", "Dijon mustard"],
+                category: "American",
+                image: "crab-cakes.jpg"
+            },
+            {
+                name: "Grilled Lobster Rolls",
+                description: "Delicious grilled lobster served in a soft roll, topped with butter and a hint of lemon for a coastal treat.",
+                email: "burgerking@example.com",
+                ingredients: ["Lobster", "Bread rolls", "Butter", "Lemon", "Chives"],
+                category: "American",
+                image: "grilled-lobster-rolls.jpg"
+            },
+            {
+                name: "Key Lime Pie",
+                description: "A tangy and refreshing key lime pie with a graham cracker crust, perfect for a sweet and zesty treat.",
+                email: "burgerking@example.com",
+                ingredients: ["Key lime juice", "Sweetened condensed milk", "Egg yolks", "Graham crackers"],
+                category: "American",
+                image: "key-lime-pie.jpg"
+            },
+            {
+                name: "Southern Fried Chicken",
+                description: "Crispy and flavorful Southern fried chicken, marinated in buttermilk and spices for that authentic taste.",
+                email: "burgerking@example.com",
+                ingredients: ["Chicken", "Flour", "Buttermilk", "Spices"],
+                category: "American",
+                image: "southern-fried-chicken.jpg"
+            },
+            {
+                name: "Spring Rolls",
+                description: "Crispy spring rolls filled with fresh vegetables and herbs, perfect as a light and healthy appetizer.",
+                email: "kungpaomaster@example.com",
+                ingredients: ["Rice paper", "Lettuce", "Carrots", "Cucumber"],
+                category: "Chinese",
+                image: "spring-rolls.jpg"
+            },
+            {
+                name: "Stir Fried Vegetables",
+                description: "A quick and healthy stir-fry with a variety of fresh vegetables tossed in soy sauce.",
+                email: "kungpaomaster@example.com",
+                ingredients: ["Bell peppers", "Broccoli", "Carrots", "Soy sauce"],
+                category: "Chinese",
+                image: "stir-fried-vegetables.jpg"
+            },
+            {
+                name: "Thai Chinese Inspired Pinch Salad",
+                description: "A refreshing and flavorful salad inspired by both Thai and Chinese cuisine, with a light dressing.",
+                email: "chefthai@example.com",
+                ingredients: ["Lettuce", "Cucumber", "Herbs", "Dressing"],
+                category: "Thai",
+                image: "thai-chinese-inspired-pinch-salad.jpg"
+            },
+            {
+                name: "Thai Green Curry",
+                description: "A fragrant and spicy Thai green curry with tender chicken and vegetables in a rich coconut milk sauce.",
+                email: "chefthai@example.com",
+                ingredients: ["Green curry paste", "Coconut milk", "Chicken", "Vegetables"],
+                category: "Thai",
+                image: "thai-green-curry.jpg"
+            },
+            {
+                name: "Thai Inspired Vegetable Broth",
+                description: "A light and flavorful vegetable broth infused with lemongrass and ginger for a refreshing soup.",
+                email: "chefthai@example.com",
+                ingredients: ["Vegetable stock", "Lemongrass", "Ginger", "Mushrooms"],
+                category: "Thai",
+                image: "thai-inspired-vegetable-broth.jpg"
+            },
+            {
+                name: "Thai Red Chicken Soup",
+                description: "A rich and spicy Thai red chicken soup, bursting with flavors from red curry paste and coconut milk.",
+                email: "chefthai@example.com",
+                ingredients: ["Red curry paste", "Coconut milk", "Chicken", "Vegetables"],
+                category: "Thai",
+                image: "thai-red-chicken-soup.jpg"
+            },
+            {
+                name: "Thai Style Mussels",
+                description: "Succulent mussels cooked in a fragrant Thai broth with coconut milk, herbs, and a touch of chili.",
+                email: "chefthai@example.com",
+                ingredients: ["Mussels", "Coconut milk", "Thai herbs", "Chili"],
+                category: "Thai",
+                image: "thai-style-mussels.jpg"
+            },
+            {
+                name: "Veggie Pad Thai",
+                description: "A delicious vegetarian Pad Thai, featuring stir-fried rice noodles, fresh vegetables, and crunchy peanuts.",
+                email: "chefthai@example.com",
+                ingredients: ["Rice noodles", "Vegetables", "Peanuts", "Tamarind paste"],
+                category: "Thai",
+                image: "veggie-pad-thai.jpg"
+            }
+        ]);
+        console.log("Data inserted successfully.");
+    } catch (error) {
+        console.error("Error inserting data:", error);
+    }
+}
 // insertDummyRecipeData();
+
+
+
+/** 
+ * Dummy User Data
+*/
+async function insertUsers() {
+    const users = [
+        {
+            name: "Key Lime Pie Lover",
+            email: "burgerking@example.com",
+            password: "keylimepie123"
+        },
+        {
+            name: "Fried Chicken Expert",
+            email: "kungpaomaster@example.com",
+            password: "friedchicken123"
+        },
+        {
+            name: "Spring Rolls Specialist",
+            email: "tacomaster@example.com",
+            password: "springrolls123"
+        },
+        {
+            name: "Stir Fry Master",
+            email: "chefthai@example.com",
+            password: "stirfry123"
+        },
+        {
+            name: "Salad Guru",
+            email: "indianspice@example.com",
+            password: "salad123"
+        },
+        {
+            name: "Curry Enthusiast",
+            email: "paellamaster@example.com",
+            password: "curry123"
+        },
+    ];
+
+    try {
+        await User.insertMany(users);
+        console.log("Users inserted successfully");
+    } catch (err) {
+        console.error("Error inserting users:", err);
+    }
+}
+// insertUsers();

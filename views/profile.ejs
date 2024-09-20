@@ -1,0 +1,55 @@
+<% if (!user) { %>
+    <!-- If user data is not present (GET request)-->
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">View Profile</h1>
+        <form action="/profile" method="POST">
+            <div class="mb-3">
+                <label for="email" class="form-label">Enter Email</label>
+                <input type="email" name="email" class="form-control" placeholder="Enter email to view profile" required>
+            </div>
+            <button type="submit" class="btn btn-primary">View Profile</button>
+        </form>
+    </div>
+<% } else { %>
+    <!-- Display user details -->
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">User Profile</h1>
+
+        <!-- User details -->
+        <div class="d-flex justify-content-md-between">
+            <div class="user-details">
+                <h6><i class="bi bi-person"></i> <%= user.name %></h6>
+            </div>
+            <div class="user-details">
+                <h6><i class="bi bi-envelope"></i> <%= user.email %></h6>
+            </div>
+        </div>
+
+        <!-- Associated recipes -->
+        <h2 class="mt-4 pb-2">Recipes by <%= user.name %></h2>
+        <div class="row">
+            <% recipes.forEach(function(recipe) { %>
+                <div class="col-12 mb-3">
+                    <div class="d-flex justify-content-between align-items-center border p-3 rounded">
+                        <div>
+                            <h5><%= recipe.name %></h5>
+                        </div>
+                        <div>
+                            <a href="/recipe/<%= recipe._id %>" class="btn btn-primary me-2">View Recipe</a>
+                            <% if (currentUser && currentUser.email === recipe.email) { %>
+                                <a href="/recipe/<%= recipe._id %>/edit" class="btn btn-warning me-2">Update</a>
+                                <form action="/recipe/<%= recipe._id %>/delete" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this recipe?');">
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
+
+            <% if (recipes.length === 0) { %>
+                <p>No recipes found.</p>
+            <% } %>
+        </div>
+    </div>
+<% } %>

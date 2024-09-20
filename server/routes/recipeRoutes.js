@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const passport = require('passport')
 const recipeController = require('../controllers/recipeController');
-const { authenticationCheck,saveRedirectUrl } = require('../middleware/authantication');
+const { authenticationCheck,saveRedirectUrl} = require('../middleware/authantication');
 
 
 
@@ -40,7 +40,7 @@ router.get('/explore-latest', recipeController.exploreLatest);
 router.get('/explore-random', recipeController.exploreRandom);
 
 // submit 
-router.get('/submit-recipe', recipeController.submitRecipe);
+router.get('/submit-recipe', authenticationCheck,recipeController.submitRecipe);
 
 // handle submit
 router.post('/submit-recipe', authenticationCheck,recipeController.submitRecipeOnPost);
@@ -59,6 +59,10 @@ router.post('/signup', recipeController.signupUser);
 
 // Logout Route
 router.get('/logout', recipeController.logoutUser);
+
+// Profile Page
+router.get('/profile', recipeController.profileGet)
+router.post('/profile', authenticationCheck,saveRedirectUrl,recipeController.profile);
 
 
 module.exports = router;  

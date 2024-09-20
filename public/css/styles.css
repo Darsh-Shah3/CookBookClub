@@ -126,8 +126,3 @@ footer p {
 .content-section {
     margin-bottom: 1rem; 
 }
-
-.navbar-shadow {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    padding-bottom: 4px;
-}

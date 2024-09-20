@@ -347,7 +347,7 @@ exports.loginUser = (req, res, next) => {
 
 /**
  * GET /logout
- */
+*/
 exports.logoutUser = (request, response) => {
     request.logout(error => {
         if (error) return next(error);
@@ -416,6 +416,33 @@ exports.signupUser = async (req, res) => {
  */
 exports.aboutUsPage = (req, res) => {
     res.render('aboutus');
+};
+
+
+/**
+ * GET /profile
+ * User Profile
+*/
+exports.profileGet=(req,res)=>{
+    res.redirect("/")
+}
+
+exports.profile = async (req, res) => {
+    try {
+        // Get the email from the POST body
+        let userEmail = req.body.email || req.session.userEmail;
+
+        // Fetch user information (assuming you have a User model)
+        let user = await User.findOne({ email: userEmail });
+
+        // Fetch all recipes associated with the same email
+        let recipes = await Recipe.find({ email: userEmail });
+
+        // Render profile.ejs with user data and associated recipes
+        res.render('profile', { title: 'CookBookClub - User Profile', user: user, recipes: recipes,currentUser:req.user});
+    } catch (error) {
+        res.status(500).send({ message: error.message || "Error Occurred" });
+    }
 };
 
 

@@ -4,23 +4,15 @@
         textarea,
         select {
             padding: 10px;
-            border-radius: 5px;  
+            border-radius: 5px;
             border: 1px solid #ccc;
             width: 100%;
             box-sizing: border-box;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            margin-bottom: 20px; 
-        }
-
-        input:hover,
-        textarea:hover,
-        select:hover {
-            transform: scale(1.05);
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease;
         }
 
         .submit-btn {
-            height: 60px; 
+            height: 60px;
             font-size: 1.25rem;
         }
 
@@ -29,13 +21,13 @@
         }
 
         .btn-ingredient {
-            font-size: 1rem; 
-            padding: 5px 20px; 
+            font-size: 1rem;
+            padding: 5px 20px;
             margin-top: 5px;
         }
 
         .ingredientDiv {
-            margin-bottom: 0; 
+            margin-bottom: 0;
         }
     </style>
 </head>
@@ -77,8 +69,7 @@
 
                     <div class="col-12 mb-3">
                         <label for="description" class="form-label">Description</label>
-                        <textarea name="description" id="description" cols="38" rows="4"
-                            class="form-control"></textarea>
+                        <textarea name="description" id="description" cols="38" rows="4" class="form-control"></textarea>
                     </div>
 
                     <div class="col-12 mb-3">

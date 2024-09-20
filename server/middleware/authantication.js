@@ -10,6 +10,7 @@ module.exports.authenticationCheck = (request, response, next) => {
 }
 
 module.exports.saveRedirectUrl = (request, response, next) => {
-    response.locals.redirectUrl = request.session.redirectUrl || '/';
+    response.locals.redirectUrl = request.session.redirectUrl ? request.session.redirectUrl: '/';
+    console.log(response.locals.redirectUrl )
     next();
 }

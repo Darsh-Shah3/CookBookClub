@@ -1,15 +1,12 @@
-require('dotenv').config(); // Make sure you're using environment variables for sensitive data
+require('dotenv').config(); 
 const nodemailer = require('nodemailer');
 
 
-// Create a reusable transporter object
-console.log(process.env.EMAIL_USER + "  "+ process.env.EMAIL_PASS)
-
 const transporter = nodemailer.createTransport({
-    service: 'gmail', // or use 'smtp' if you have another email service
+    service: 'gmail',
     auth: {
-        user: process.env.EMAIL_USER, // Your email address (e.g. cookBookClub@gmail.com)
-        pass: process.env.EMAIL_PASS, // Your email password or app-specific password for Gmail
+        user: process.env.EMAIL_USER, 
+        pass: process.env.EMAIL_PASS, 
     },
 });
 

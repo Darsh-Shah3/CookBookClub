@@ -78,9 +78,6 @@
     <!-- Latest End -->
 
 
-
-
-
     <!-- Thai Start -->
 
     <section class="pb-4 pt-4">
@@ -110,9 +107,6 @@
     </section>
 
     <!-- Thai End -->
-
-
-
 
 
     <!-- American Start -->
@@ -164,9 +158,9 @@
         document.addEventListener('DOMContentLoaded', function () {
             const section = document.querySelector('.animate-from-right');
             const options = {
-                root: null, // Use the viewport as the root
+                root: null, 
                 rootMargin: '0px',
-                threshold: 0.1 // Trigger when 10% of the section is in view
+                threshold: 0.1 
             };
 
             const observer = new IntersectionObserver(function (entries) {

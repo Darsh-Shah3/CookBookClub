@@ -23,40 +23,56 @@
 <body>
 
     <div class="container-xxl px-md-5 bg-white shadow-lg">
-        <div class="container-xxl px-md-5 bg-white position-sticky" style="top: 0; z-index: 1030;">
-            <section id="header">
-                <header
-                    class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
-                    <a href="/"
-                        class="d-flex align-items-center col-md-3 mb-md-0 text-dark text-decoration-none logo-link">
-                        <img src="/img/logo-no-background.png" alt="CookBookClub" height="50" width="280" class="me-2">
-                    </a>
+        <nav class="navbar navbar-expand-lg navbar-light bg-white position-sticky shadow pb-4" style="top: 0; z-index: 1030;">
+            <div class="container-xxl px-md-5">
+              <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none logo-link">
+                <img src="/img/logo-no-background.png" alt="CookBookClub" height="48" width="280" class="me-2">
+              </a>
+          
+              <!-- Toggler button for small screens -->
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+          
+              <div class="collapse navbar-collapse" id="navbarNav">
+                <!-- Nav links -->
+                <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+                  <li class="nav-item">
+                    <a href="/" class="nav-link px-2 link-secondary">Home</a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="/aboutUs" class="nav-link px-2 link-secondary">About</a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="/submit-recipe" class="nav-link px-2 link-secondary">Submit</a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="/categories" class="nav-link px-2 link-secondary">Categories</a>
+                  </li>
+          
+                  <% if (currentUser) { %>
+                  <li class="nav-item">
+                    <a href="/logout" class="nav-link px-2 link-secondary">Logout</a>
+                  </li>
+                  <% } else { %>
+                  <li class="nav-item">
+                    <a href="/login" class="nav-link px-2 link-secondary">Login</a>
+                  </li>
+                  <% } %>
+                </ul>
+          
+                <!-- Search form -->
+                <div class="d-flex">
+                  <form method="POST" action="/search">
+                    <input type="search" name="searchTerm" class="form-control" placeholder="Search..." aria-label="Search">
+                  </form>
+                </div>
+              </div>
+            </div>
+          </nav>
 
-                    <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-                        <li><a href="/" class="nav-link px-2 link-secondary">Home</a></li>
-                        <li><a href="/aboutUs" class="nav-link px-2 link-secondary">About</a></li>
-                        <li><a href="/submit-recipe" class="nav-link px-2 link-secondary">Submit</a></li>
-                        <li><a href="#footer" class="nav-link px-2 link-secondary">Contact</a></li>
 
-                        <% if (currentUser) { %>
-                            <li><a href="/logout" class="nav-link px-2 link-secondary">Logout</a></li>
-                            <% } else { %>
-                                <li><a href="/login" class="nav-link px-2 link-secondary">Login</a></li>
-                                <% } %>
-                    </ul>
-
-                    <div class="col-md-3 text-end">
-                        <form method="POST" action="/search">
-                            <input type="search" name="searchTerm" class="form-control" placeholder="Search..."
-                                aria-label="Search">
-                        </form>
-                    </div>
-                </header>
-            </section>
-        </div>
-
-
-        <section id="main-hero">
+        <section id="main-hero" class="mt-5">
             <main>
                 <%- include('../includes/flash') %>
                     <%- body -%>

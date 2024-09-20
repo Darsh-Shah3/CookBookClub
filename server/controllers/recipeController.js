@@ -2,7 +2,7 @@ require('../models/database');
 const { response } = require('express');
 const Category = require('../models/Category');
 const Recipe = require('../models/Recipe');
-const User = require('../models/User'); // Ensure User model is imported
+const User = require('../models/User'); 
 const bcrypt = require('bcrypt');
 const passport = require('passport');
 const { sendWelcomeEmail } = require('../utils/mailer');
@@ -69,7 +69,7 @@ exports.exploreCategoriesById = async (request, response) => {
 
 
 /**  
- * GET /recipe/:id
+ * GET /recipe/:id 
  * Recipe
 */
 exports.exploreRecipe = async (request, response) => {
@@ -111,14 +111,14 @@ exports.updateRecipe = async (request, response) => {
  * POST /recipe/:id
  * Updated Recipe
  */
-exports.handleUpdateRecipe = async (req, res) => {
-    const id = req.params.id;
-    let newImageName = req.body.existingImage; // Use the existing image if no new image is uploaded
+exports.handleUpdateRecipe = async (request, response) => {
+    const id = request.params.id;
+    let newImageName = request.body.existingImage; // Use the existing image if no new image is uploaded
     console.log("Existing Image:", newImageName);
-    console.log('Request body:', req.body);
-    console.log('Files in request:', req.files);
-    if (req.files && req.files.image) {
-        const uploadedImage = req.files.image;
+    console.log('Request body:', request.body);
+    console.log('Files in request:', request.files);
+    if (request.files && request.files.image) {
+        const uploadedImage = request.files.image;
         console.log('Uploaded Image:', uploadedImage);
         newImageName = Date.now() + '-' + uploadedImage.name;
         const uploadPath = path.resolve('C://Users//LENOVO//OneDrive//Desktop//CookBookClub//public//uploads//' + newImageName);
@@ -128,38 +128,38 @@ exports.handleUpdateRecipe = async (req, res) => {
             console.log("File uploaded successfully");
 
             // Remove the old image if a new image is uploaded
-            if (req.body.existingImage) {
-                const oldImagePath = path.resolve('C://Users//LENOVO//OneDrive//Desktop//CookBookClub//public//uploads//' + req.body.existingImage);
+            if (request.body.existingImage) {
+                const oldImagePath = path.resolve('C://Users//LENOVO//OneDrive//Desktop//CookBookClub//public//uploads//' + request.body.existingImage);
                 if (fs.existsSync(oldImagePath)) {
                     fs.unlinkSync(oldImagePath); // Delete the old image
                 }
             }
         } catch (error) {
             console.error("Error handling file upload: ", error);
-            return res.status(500).send('Server Error');
+            return response.status(500).send('Server Error');
         }
     }
 
     try {
         const updatedRecipe = await Recipe.findByIdAndUpdate(id, {
-            name: req.body.name,
-            description: req.body.description,
-            ingredients: req.body.ingredients,
-            category: req.body.category,
+            name: request.body.name,
+            description: request.body.description,
+            ingredients: request.body.ingredients,
+            category: request.body.category,
             image: newImageName
         }, { new: true, runValidators: true });
         console.log("Updated Recipe:", updatedRecipe);
 
         if (!updatedRecipe) {
-            return res.status(404).send('Recipe not found');
+            return response.status(404).send('Recipe not found');
         }
 
-        req.flash('success', 'Recipe updated successfully');
+        request.flash('success', 'Recipe updated successfully');
 
-        res.redirect(`/recipe/${updatedRecipe._id}`);
+        response.redirect(`/recipe/${updatedRecipe._id}`);
     } catch (error) {
         console.error("Error updating recipe: ", error);
-        res.status(500).send('Server Error');
+        response.status(500).send('Server Error');
     }
 };
 
@@ -268,7 +268,7 @@ exports.submitRecipe = async (request, response) => {
  * Submit-Recipe
 */
 exports.submitRecipeOnPost = async (request, response) => {
-    console.log("Recipe submission started");  // Log start of the request
+    console.log("Recipe submission started");  
 
     try {
         let imageUploadFile;
@@ -308,23 +308,19 @@ exports.submitRecipeOnPost = async (request, response) => {
             image: newImageName
         });
 
-        await newRecipe.save();  // Ensure the recipe is saved
+        await newRecipe.save();  
         console.log("Recipe saved successfully");
 
-        // Set success flash message
         request.flash('infoSubmit', 'Recipe has been added.');
 
-        // Redirect after successful submission
         console.log("Redirecting to /submit-recipe");
         return response.redirect('/submit-recipe');  // Ensure only one response is sent
 
     } catch (error) {
         console.log("Error occurred: ", error.message || error);
 
-        // Set error flash message
         request.flash('infoError', error.message || 'Error Occurred');
 
-        // Redirect in case of an error
         console.log("Redirecting to /submit-recipe after error");
         return response.redirect('/submit-recipe');
     }
@@ -336,7 +332,7 @@ exports.submitRecipeOnPost = async (request, response) => {
  * Login Page
  */
 exports.loginPage = (req, res) => {
-    res.render('login', { layout: false }); // Make sure there's a corresponding login.ejs file
+    res.render('login', { layout: false }); 
 };
 
 /**
@@ -366,7 +362,7 @@ exports.logoutUser = (request, response) => {
  * Signup Page
  */
 exports.signupPage = (req, res) => {
-    res.render('signup', { layout: false }); // Make sure there's a corresponding signup.ejs file
+    res.render('signup', { layout: false }); 
 };
 
 /**
@@ -377,7 +373,7 @@ exports.signupUser = async (req, res) => {
     const { name, email, password } = req.body;
 
     try {
-        // Check if the username or email already exists
+        // Check if the email already exists
 
         const existingEmail = await User.findOne({ email: email });
         console.log(existingEmail)
@@ -389,21 +385,19 @@ exports.signupUser = async (req, res) => {
         // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Create a new user
         const newUser = new User({
             name: name,
             email: email,
             password: hashedPassword,
         });
 
-        // Save the new user to the database
         await newUser.save();
         req.login(newUser, async error => {
             if (error) {
                 return next(error)
             }
             // Send the welcome email
-            await sendWelcomeEmail(email, name); // Send the welcome email here
+            await sendWelcomeEmail(email, name);
 
             req.flash('success', 'Account created successfully! Please check your email.');
             res.redirect('/');
@@ -456,7 +450,7 @@ async function insertDummyRecipeData() {
             {
                 name: "Spicy Thai Curry",
                 description: "A flavorful Thai curry made with coconut milk and a medley of vegetables and aromatic herbs. Perfect for spice lovers!",
-                email: "chefthai@example.com",
+                email: "mohitpandya078@gmail.com",
                 ingredients: [
                     "Coconut milk",
                     "Red curry paste",
@@ -472,7 +466,7 @@ async function insertDummyRecipeData() {
             {
                 name: "American Cheeseburger",
                 description: "A mouthwatering cheeseburger with a juicy beef patty, gooey cheddar, and fresh toppings like lettuce and tomato.",
-                email: "burgerking@example.com",
+                email: "shahdarsh2304@gmail.com",
                 ingredients: [
                     "Ground beef",
                     "Cheddar cheese",
@@ -488,7 +482,7 @@ async function insertDummyRecipeData() {
             {
                 name: "Kung Pao Chicken",
                 description: "A fiery stir-fried dish packed with chicken, crunchy peanuts, and chili peppers, all coated in a savory soy sauce.",
-                email: "kungpaomaster@example.com",
+                email: "mohitpandya078@gmail.com",
                 ingredients: [
                     "Chicken",
                     "Peanuts",
@@ -504,7 +498,7 @@ async function insertDummyRecipeData() {
             {
                 name: "Mexican Tacos",
                 description: "Authentic tacos with seasoned beef, zesty salsa, and creamy guacamole, served in warm tortillas.",
-                email: "tacomaster@example.com",
+                email: "mohitpandya078@gmail.com",
                 ingredients: [
                     "Tortillas",
                     "Ground beef",
@@ -520,7 +514,7 @@ async function insertDummyRecipeData() {
             {
                 name: "Indian Butter Chicken",
                 description: "A creamy, rich Indian dish with tender chicken, butter, tomato, and a blend of spices for a delightful meal.",
-                email: "indianspice@example.com",
+                email: "mohitpandya078@gmail.com",
                 ingredients: [
                     "Chicken",
                     "Tomato sauce",
@@ -536,7 +530,7 @@ async function insertDummyRecipeData() {
             {
                 name: "Paella Valenciana",
                 description: "A Spanish delicacy with saffron-infused rice, succulent seafood, chicken, and an array of vegetables.",
-                email: "paellamaster@example.com",
+                email: "mohitpandya078@gmail.com",
                 ingredients: [
                     "Saffron",
                     "Rice",
@@ -553,7 +547,7 @@ async function insertDummyRecipeData() {
             {
                 name: "Chinese Steak Tofu Stew",
                 description: "A savory stew combining tender steak and tofu simmered in a flavorful broth with aromatic spices.",
-                email: "kungpaomaster@example.com",
+                email: "shahdarsh2304@gmail.com",
                 ingredients: ["Steak", "Tofu", "Soy sauce", "Ginger", "Garlic", "Spring onions"],
                 category: "Chinese",
                 image: "chinese-steak-tofu-stew.jpg"
@@ -561,7 +555,7 @@ async function insertDummyRecipeData() {
             {
                 name: "Crab Cakes",
                 description: "Delicately seasoned crab cakes with a crispy outer shell and tender crab meat inside, perfect as an appetizer.",
-                email: "burgerking@example.com",
+                email: "shahdarsh2304@gmail.com",
                 ingredients: ["Crab meat", "Breadcrumbs", "Egg", "Mayonnaise", "Dijon mustard"],
                 category: "American",
                 image: "crab-cakes.jpg"
@@ -569,7 +563,7 @@ async function insertDummyRecipeData() {
             {
                 name: "Grilled Lobster Rolls",
                 description: "Delicious grilled lobster served in a soft roll, topped with butter and a hint of lemon for a coastal treat.",
-                email: "burgerking@example.com",
+                email: "shahdarsh2304@gmail.com",
                 ingredients: ["Lobster", "Bread rolls", "Butter", "Lemon", "Chives"],
                 category: "American",
                 image: "grilled-lobster-rolls.jpg"
@@ -577,7 +571,7 @@ async function insertDummyRecipeData() {
             {
                 name: "Key Lime Pie",
                 description: "A tangy and refreshing key lime pie with a graham cracker crust, perfect for a sweet and zesty treat.",
-                email: "burgerking@example.com",
+                email: "shahdarsh2304@gmail.com",
                 ingredients: ["Key lime juice", "Sweetened condensed milk", "Egg yolks", "Graham crackers"],
                 category: "American",
                 image: "key-lime-pie.jpg"
@@ -585,7 +579,7 @@ async function insertDummyRecipeData() {
             {
                 name: "Southern Fried Chicken",
                 description: "Crispy and flavorful Southern fried chicken, marinated in buttermilk and spices for that authentic taste.",
-                email: "burgerking@example.com",
+                email: "shahdarsh2304@gmail.com",
                 ingredients: ["Chicken", "Flour", "Buttermilk", "Spices"],
                 category: "American",
                 image: "southern-fried-chicken.jpg"
@@ -593,7 +587,7 @@ async function insertDummyRecipeData() {
             {
                 name: "Spring Rolls",
                 description: "Crispy spring rolls filled with fresh vegetables and herbs, perfect as a light and healthy appetizer.",
-                email: "kungpaomaster@example.com",
+                email: "shahdarsh2304@gmail.com",
                 ingredients: ["Rice paper", "Lettuce", "Carrots", "Cucumber"],
                 category: "Chinese",
                 image: "spring-rolls.jpg"
@@ -601,7 +595,7 @@ async function insertDummyRecipeData() {
             {
                 name: "Stir Fried Vegetables",
                 description: "A quick and healthy stir-fry with a variety of fresh vegetables tossed in soy sauce.",
-                email: "kungpaomaster@example.com",
+                email: "shahdarsh2304@gmail.com",
                 ingredients: ["Bell peppers", "Broccoli", "Carrots", "Soy sauce"],
                 category: "Chinese",
                 image: "stir-fried-vegetables.jpg"
@@ -609,7 +603,7 @@ async function insertDummyRecipeData() {
             {
                 name: "Thai Chinese Inspired Pinch Salad",
                 description: "A refreshing and flavorful salad inspired by both Thai and Chinese cuisine, with a light dressing.",
-                email: "chefthai@example.com",
+                email: "mohitpandya078@gmail.com",
                 ingredients: ["Lettuce", "Cucumber", "Herbs", "Dressing"],
                 category: "Thai",
                 image: "thai-chinese-inspired-pinch-salad.jpg"
@@ -617,7 +611,7 @@ async function insertDummyRecipeData() {
             {
                 name: "Thai Green Curry",
                 description: "A fragrant and spicy Thai green curry with tender chicken and vegetables in a rich coconut milk sauce.",
-                email: "chefthai@example.com",
+                email: "mohitpandya078@gmail.com",
                 ingredients: ["Green curry paste", "Coconut milk", "Chicken", "Vegetables"],
                 category: "Thai",
                 image: "thai-green-curry.jpg"
@@ -625,7 +619,7 @@ async function insertDummyRecipeData() {
             {
                 name: "Thai Inspired Vegetable Broth",
                 description: "A light and flavorful vegetable broth infused with lemongrass and ginger for a refreshing soup.",
-                email: "chefthai@example.com",
+                email: "mohitpandya078@gmail.com",
                 ingredients: ["Vegetable stock", "Lemongrass", "Ginger", "Mushrooms"],
                 category: "Thai",
                 image: "thai-inspired-vegetable-broth.jpg"
@@ -633,7 +627,7 @@ async function insertDummyRecipeData() {
             {
                 name: "Thai Red Chicken Soup",
                 description: "A rich and spicy Thai red chicken soup, bursting with flavors from red curry paste and coconut milk.",
-                email: "chefthai@example.com",
+                email: "mohitpandya078@gmail.com",
                 ingredients: ["Red curry paste", "Coconut milk", "Chicken", "Vegetables"],
                 category: "Thai",
                 image: "thai-red-chicken-soup.jpg"
@@ -641,7 +635,7 @@ async function insertDummyRecipeData() {
             {
                 name: "Thai Style Mussels",
                 description: "Succulent mussels cooked in a fragrant Thai broth with coconut milk, herbs, and a touch of chili.",
-                email: "chefthai@example.com",
+                email: "mohitpandya078@gmail.com",
                 ingredients: ["Mussels", "Coconut milk", "Thai herbs", "Chili"],
                 category: "Thai",
                 image: "thai-style-mussels.jpg"
@@ -649,7 +643,7 @@ async function insertDummyRecipeData() {
             {
                 name: "Veggie Pad Thai",
                 description: "A delicious vegetarian Pad Thai, featuring stir-fried rice noodles, fresh vegetables, and crunchy peanuts.",
-                email: "chefthai@example.com",
+                email: "mohitpandya078@gmail.com",
                 ingredients: ["Rice noodles", "Vegetables", "Peanuts", "Tamarind paste"],
                 category: "Thai",
                 image: "veggie-pad-thai.jpg"
@@ -661,51 +655,3 @@ async function insertDummyRecipeData() {
     }
 }
 // insertDummyRecipeData();
-
-
-
-/** 
- * Dummy User Data
-*/
-async function insertUsers() {
-    const users = [
-        {
-            name: "Key Lime Pie Lover",
-            email: "burgerking@example.com",
-            password: "keylimepie123"
-        },
-        {
-            name: "Fried Chicken Expert",
-            email: "kungpaomaster@example.com",
-            password: "friedchicken123"
-        },
-        {
-            name: "Spring Rolls Specialist",
-            email: "tacomaster@example.com",
-            password: "springrolls123"
-        },
-        {
-            name: "Stir Fry Master",
-            email: "chefthai@example.com",
-            password: "stirfry123"
-        },
-        {
-            name: "Salad Guru",
-            email: "indianspice@example.com",
-            password: "salad123"
-        },
-        {
-            name: "Curry Enthusiast",
-            email: "paellamaster@example.com",
-            password: "curry123"
-        },
-    ];
-
-    try {
-        await User.insertMany(users);
-        console.log("Users inserted successfully");
-    } catch (err) {
-        console.error("Error inserting users:", err);
-    }
-}
-// insertUsers();

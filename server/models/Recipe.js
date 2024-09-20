@@ -40,7 +40,7 @@ const recipeSchema = new mongoose.Schema({
 
 recipeSchema.index({name:'text',description:'text'})
 
-// WildCard Indexing :  text searches across all string fields in the documents
+// text searches across all string fields in the documents
 recipeSchema.index({"$**":'text'})
 
 

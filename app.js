@@ -4,7 +4,6 @@ const fileUpload = require('express-fileupload');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const flash = require('connect-flash');
-const path = require('path');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
@@ -39,6 +38,7 @@ app.use(session({
 app.use(flash());
 
 // Allows method overriding via query string
+// For delete and update request
 app.use(methodOverride('_method')); 
 
 // Passport initialization and session handling
@@ -48,11 +48,12 @@ app.use(passport.session());
 // Express file upload middleware for handling file uploads
 app.use(fileUpload());
 
-// Middleware to make the current user available in views (should come after passport.session)
+// Middleware to make the current user available in views 
+// For local user is accessible
 app.use((request, response, next) => {
     response.locals.currentUser = request.user;
-    response.locals.success = request.flash('success'); //stroing for success message
-    response.locals.error = request.flash('error'); //storing for error message
+    response.locals.success = request.flash('success'); 
+    response.locals.error = request.flash('error'); 
     response.locals.redirectUrl="/";
     next();
 });
@@ -60,7 +61,6 @@ app.use((request, response, next) => {
 // Passport configuration
 passport.use(new LocalStrategy({ usernameField: 'email', passwordField: 'password' },
     async (email, password, done) => {
-        console.log('Im inside the local strategy');
         try {
             const user = await User.findOne({ email });
             if (!user) {
@@ -96,7 +96,7 @@ passport.deserializeUser(async (id, done) => {
 app.set('view engine', 'ejs');
 app.set('layout', './layouts/main');
 
-// Routes (should come after middleware setup)
+// Routes 
 const routes = require('./server/routes/recipeRoutes.js');
 app.use('/', routes);
 

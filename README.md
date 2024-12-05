@@ -12,7 +12,7 @@ A web application for submitting and updating recipes, including the ability to 
 
 ## Technologies Used
 
-- **Frontend**: React
+- **Frontend**: EJS
 - **Backend**: Node.js, Express
 - **Database**: MongoDB
 - **Styling**: Bootstrap
